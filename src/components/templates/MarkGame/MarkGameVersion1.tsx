@@ -20,7 +20,7 @@ export const MarkGame: React.FC = () => {
     const [gameState, setGameState] = useState<GameState>(initGameState);
 
     // [!] useEffectで行っているは何か。
-    // 
+    //
     useEffect(() => {
         if (initEffect) {
             return;
@@ -32,18 +32,18 @@ export const MarkGame: React.FC = () => {
     return <>
         <Head>
             {// [!] タグの中の{}でHTML出力時に何が出力されるか。
-             // 
+             //
             }
             <title>{markGameTitle()}</title>
         </Head>
         <p className='desc'>MarkGameVersion1.tsx</p>
         まるばつゲーム(useStateで状態管理)
         {// [!] classNameのfieldはどこに記載があるのか。
-         // 
+         //
         }
         <div className={style.field}>
             {// [!] GameBoardタグの属性でTypeScriptから渡す値の型の指定方法
-             // 
+             //
             }
             <GameBoard gameState={gameState} onGameBoardClick={
                 (index) => {
@@ -60,14 +60,13 @@ export const MarkGame: React.FC = () => {
                         }
                         var winner = getWinner(gameState, index);
                         var draw = boardData.filter((cell)=>cell == '').length == 0;
-                        setGameState({boardWidth, boardData, currentPlayer, winner, draw});                        
-                    } else {
+                        setGameState({boardWidth, boardData, currentPlayer, winner, draw});
                         console.debug('invelid index!');
                     }
                 }
             } />
             <GameStatus gameState={gameState} onGameResetClick={() => {
-                setGameState(initGameState); 
+                setGameState(initGameState);
             }} />
         </div>
     </>;
