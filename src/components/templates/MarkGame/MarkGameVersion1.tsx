@@ -22,7 +22,6 @@ export const MarkGame: React.FC = () => {
     // [!] useEffectで行っているは何か。
     //
     useEffect(() => {
-        
         if (initEffect) {
             return;
         }
