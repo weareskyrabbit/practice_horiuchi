@@ -9,6 +9,8 @@ const Index = () => {
 
         <a href='./mark-game-v1'>まるばつゲーム(useStateで状態管理)</a><br />
         <a href='./mark-game-v2'>まるばつゲーム(useReducerで状態管理)</a><br />
+        {/* 修正箇所 */}
+        <a href="">リバーシ(課題)</a><br />
     </>
 };
 
