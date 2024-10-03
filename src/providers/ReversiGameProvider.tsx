@@ -1,5 +1,14 @@
 import React, { useReducer } from "react";
 import { createContext, ReactNode } from "react";
+import { isCellEmpty } from "@/components/templates/ReversiGame/features";
+// [WIP] あとで書き換え
+// import { getWinner, isCellEmpty } from "@/components/templates/ReversiGame/features";
+
+export enum Player {
+    White = '○',
+    Black = '●'
+    // [WIP] あとで変更？？
+}
 
 //ReversiGameState(インターフェース)を定義
 interface ReversiGameState {
@@ -28,7 +37,68 @@ interface ReversiGameContext {
     onGameBoardClick: (index: number) => void
 }
 
+// ActionType(列挙型)を定義
+enum ActionType {
+    updateGameState,
+}
+
+type Action =
+{
+    // アクションの種類を指定
+    type: ActionType.updateGameState,
+    payload: {
+        gameState: ReversiGameState
+    }
+};
+
 // useReversiGameフックの定義
 // ReversiGameContextから現在のコンテキストの値を取得
 const ReversiGameContext = createContext({} as ReversiGameContext);
 export const useReversiGame = () => React.useContext(ReversiGameContext);
+
+// ReversiGameProviderというReactコンポーネントを定義
+// ゲームの状態と関数を子コンポーネントに提供
+export const ReversiGameProvider: React.FC<{children: ReactNode}> = ({
+    children
+}) => {
+
+    // 初期状態の定義
+    var firstGameState: ReversiGameState = {
+        boardWidth: 8,
+        boardData: Array(64).fill(''),
+        currentPlayer: Player.Black,
+        winner : null,
+        draw: false
+    };
+
+    // ゲームの状態を初期値に設定
+    const initMarkGameState = (() => {
+        // dispatchを使用してアクションを送信し、ゲーム状態をfirstGameStateに更新
+        dispatch({type: ActionType.updateGameState, payload: {
+            gameState: firstGameState
+        }});
+    });
+
+    // ゲームのクリック処理
+
+    // リデューサー関数
+    const reducer = (_: ReversiGameState, action: Action): ReversiGameState => {
+        switch (action.type) {
+            case ActionType.updateGameState:
+                return action.payload.gameState;
+        }
+    }
+
+    // ゲームの状態を管理
+    const [gameState, dispatch] = useReducer(reducer, firstGameState);
+
+    return (
+        <ReversiGameContext.Provider value={{
+            // [WIP] あとで書き換え gameState, initReversiGameState, onGameBoardClick
+            gameState
+        }}>
+            {children}
+        </ReversiGameContext.Provider>
+    );
+
+}
