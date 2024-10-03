@@ -5,7 +5,7 @@ const ReversiGameT = () => {
     return <>
     <ReversiGame />
     <br />
-    // トップページへ
+    {/* トップページへ */}
     <a href="../">トップページへ</a>
     </>
 };
