@@ -1,3 +1,4 @@
+// トップページ
 import Head from "next/head";
 
 const Index = () => {
@@ -9,6 +10,8 @@ const Index = () => {
 
         <a href='./mark-game-v1'>まるばつゲーム(useStateで状態管理)</a><br />
         <a href='./mark-game-v2'>まるばつゲーム(useReducerで状態管理)</a><br />
+        {/* 追加箇所 */}
+        <a href="./reversi-game">リバーシ(演習課題)</a><br />
     </>
 };
 
