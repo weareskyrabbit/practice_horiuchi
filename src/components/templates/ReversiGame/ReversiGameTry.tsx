@@ -13,3 +13,36 @@ import { useReversiGame } from '@/providers/ReversiGameProviderProvider';
 // ゲームのタイトルを取得する関数。
 import { reversiGameTitle } from './features';
 import style from './style.module.css';
+
+
+// 初回のみ実行されるように制御
+var initEffect = false;
+
+export const ReversiGame: React.FC = () => {
+    const { gameState, initReversiGameState, onGameBoardClick } = useReversiGame();
+
+    useEffect(() => {
+        if (initEffect) {
+            return;
+        }
+        initEffect = true;
+        initReversiState();
+        console.debug('useEffect!');
+    }, []);
+
+    return <>
+        <Head>
+            <title>{reversiGameTitle()}</title>
+        </Head>
+        <p className='desc'>ReversiGameTry.tsx</p>
+        リバーシ(演習課題)
+        <div className={style.field}>
+            <GameBoardR gameState={gameState} onGameBoardClick={
+                (index) => onGameBoardClick(index)
+            } />
+            <GameStatusR gameState={gameState} onGameResetClick={() => {
+                initReversiGameState();
+            }} />
+        </div>
+    </>
+}
