@@ -72,7 +72,7 @@ export const ReversiGameProvider: React.FC<{children: ReactNode}> = ({
     };
 
     // ゲームの状態を初期値に設定
-    const initMarkGameState = (() => {
+    const initReversiGameState = (() => {
         // dispatchを使用してアクションを送信し、ゲーム状態をfirstGameStateに更新
         dispatch({type: ActionType.updateGameState, payload: {
             gameState: firstGameState
@@ -80,6 +80,7 @@ export const ReversiGameProvider: React.FC<{children: ReactNode}> = ({
     });
 
     // ゲームのクリック処理
+    const onGameBoardClick = (index: number) => {}
 
     // リデューサー関数
     const reducer = (_: ReversiGameState, action: Action): ReversiGameState => {
@@ -94,8 +95,7 @@ export const ReversiGameProvider: React.FC<{children: ReactNode}> = ({
 
     return (
         <ReversiGameContext.Provider value={{
-            // [WIP] あとで書き換え gameState, initReversiGameState, onGameBoardClick
-            gameState
+            gameState, initReversiGameState, onGameBoardClick
         }}>
             {children}
         </ReversiGameContext.Provider>
