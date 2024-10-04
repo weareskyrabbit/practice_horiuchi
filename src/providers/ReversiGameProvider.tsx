@@ -89,6 +89,7 @@ export const ReversiGameProvider: React.FC<{children: ReactNode}> = ({
 
     // ゲームのクリック処理
     const onGameBoardClick = (row: number, col: number) => {
+        console.debug (' row= ' + row + ' col= ' + col);
         // セルが空でない場合は何もしない
         if (gameState.boardData[row][col] !== null) {
             return;

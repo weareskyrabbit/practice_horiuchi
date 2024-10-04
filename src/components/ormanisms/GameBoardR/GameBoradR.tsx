@@ -26,7 +26,8 @@ export type GameBoardProps = {
 export const GameBoardR: React.FC<GameBoardProps> = ({gameState, onGameBoardClick}) => {
     const boardWidth = gameState.boardWidth;
     const boardData = gameState.boardData;
-    const cols = convertReversiGameCols(boardWidth, boardData);
+    // const cols = convertReversiGameCols(boardWidth, boardData);
+    const cols = boardData;
 
     return <div>
         <p className='desc'>GameBoardR.tsx</p>
