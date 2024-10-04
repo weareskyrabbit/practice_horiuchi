@@ -40,8 +40,9 @@ export const ReversiGame: React.FC = () => {
         <p className='desc'>ReversiGameTry.tsx</p>
         リバーシ(演習課題)
         <div className={style.field}>
-            <GameBoardR gameState={gameState} onGameBoardClick={
-                (index) => onGameBoardClick(index)
+            <GameBoardR
+                gameState={gameState}
+                onGameBoardClick={(row, col) => onGameBoardClick(row, col)
             } />
             {/* <GameStatusR gameState={gameState} onGameResetClick={() => {
                 initReversiGameState();

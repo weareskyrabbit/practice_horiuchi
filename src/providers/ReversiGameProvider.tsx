@@ -35,7 +35,8 @@ interface ReversiGameContext {
     initReversiGameState: () => void,
     // onGameBoardClickは、数値の引数indexを取る関数の型
     // ゲームボードの特定のセルがクリックされたときの処理
-    onGameBoardClick: (index: number) => void
+    // onGameBoardClick: (index: number) => void
+    onGameBoardClick: (row: number, col: number) => void
 }
 
 // ActionType(列挙型)を定義
