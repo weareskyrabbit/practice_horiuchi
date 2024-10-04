@@ -30,7 +30,7 @@ export const GameBoardR: React.FC<GameBoardProps> = ({gameState, onGameBoardClic
 
     return <div>
         <p className='desc'>GameBoardR.tsx</p>
-        <table>
+        <table className={style.table}>
             <tbody>
                 {
                     // 各行を出力する
