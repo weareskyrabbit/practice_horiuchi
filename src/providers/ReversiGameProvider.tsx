@@ -67,7 +67,7 @@ export const ReversiGameProvider: React.FC<{children: ReactNode}> = ({
     // 初期状態の定義
     var firstGameState: ReversiGameState = {
         boardWidth: 8,
-        boardData: Array(64).fill(''),
+        boardData: Array.from({ length: 8 }, () => Array(8).fill(null)),
         currentPlayer: Player.Black,
         winner : null,
         draw: false
@@ -82,7 +82,7 @@ export const ReversiGameProvider: React.FC<{children: ReactNode}> = ({
     });
 
     // ゲームのクリック処理
-    const onGameBoardClick = (index: number) => {}
+    const onGameBoardClick = (row: number, col: number) => {}
 
     // リデューサー関数
     const reducer = (_: ReversiGameState, action: Action): ReversiGameState => {
