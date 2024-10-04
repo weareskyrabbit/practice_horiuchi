@@ -41,7 +41,7 @@ export const GameBoardR: React.FC<GameBoardProps> = ({gameState, onGameBoardClic
                                 col.map((cell, rowIdx) => (
                                     <Square
                                         key={'board-cell-' + colIdx + '-' + rowIdx}
-                                        onSquareClick={() => onGameBoardClick(colIdx, rowIdx)}
+                                        onSquareClick={() => onGameBoardClick(rowIdx, colIdx)}
                                     >
                                         {cell}
                                     </Square>
