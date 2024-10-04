@@ -6,7 +6,7 @@ export enum Player {
 
 export interface GameState {
     boardWidth: number;
-    boardData: string[];
+    boardData: (Player | null)[][];
     currentPlayer: Player;
     winner: Player | null;
     draw: boolean;
@@ -17,8 +17,8 @@ export const reversiGameTitle = () => {
 }
 
 // セルが空かどうかの関数定義
-export function isCellEmpty(gameState: GameState, index: number) {
-    return gameState.boardData[index] == '';
+export function isCellEmpty(gameState: GameState, row: number, col: number) {
+    return gameState.boardData[row][col] === null;
 }
 
 // ボードデータを列ごとの配列に変換する関数の定義

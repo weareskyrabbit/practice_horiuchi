@@ -6,14 +6,13 @@ import Head from 'next/head';
 import { useEffect } from 'react';
 // ゲームボードを表示するコンポーネント。
 import { GameBoardR } from "@/components/ormanisms/GameBoardR";
-// // ゲームの状態（スコアやターン）を表示するコンポーネント。
-// import { GameStatus } from '@/components/ormanisms/GameStatusR';
-// // ゲームの状態管理に関するカスタムフック。ゲームの状態やアクションを管理。
-// import { useReversiGame } from '@/providers/ReversiGameProviderProvider';
-// // ゲームのタイトルを取得する関数。
-// import { reversiGameTitle } from './features';
-import style from './style.module.css';
+// ゲームの状態（スコアやターン）を表示するコンポーネント。
+import { GameStatus } from '@/components/ormanisms/GameStatusR';
+// ゲームの状態管理に関するカスタムフック。ゲームの状態やアクションを管理。
 import { useReversiGame } from '@/providers/ReversiGameProvider';
+// ゲームのタイトルを取得する関数。
+import { reversiGameTitle } from './features';
+import style from './style.module.css';
 
 
 // 初回のみ実行されるように制御
