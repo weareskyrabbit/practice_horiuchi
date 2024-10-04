@@ -83,10 +83,18 @@ export const ReversiGameProvider: React.FC<{children: ReactNode}> = ({
 
     // ゲームのクリック処理
     const onGameBoardClick = (row: number, col: number) => {
+
         // セルが空でない場合は何もしない
         if (gameState.boardData[row][col] !== null) {
             return;
-    }
+        }
+
+        // 有効な8つの方向を定義
+        const directions = [
+            { x: -1, y: -1 }, { x: -1, y: 0 }, { x: -1, y: 1 },
+            { x: 0, y: -1 },                     { x: 0, y: 1 },
+            { x: 1, y: -1 }, { x: 1, y: 0 }, { x: 1, y: 1 }
+        ];
 
     }
 
