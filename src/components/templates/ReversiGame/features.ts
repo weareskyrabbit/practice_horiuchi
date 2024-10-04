@@ -1,8 +1,7 @@
 
 export enum Player {
-    White = '○',
-    Black = '●'
-    // [WIP] あとで変更？？
+    White = '⚪',
+    Black = '⚫'
 }
 
 export interface GameState {

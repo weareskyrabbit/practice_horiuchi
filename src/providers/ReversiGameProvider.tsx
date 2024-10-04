@@ -5,9 +5,8 @@ import { isCellEmpty } from "@/components/templates/ReversiGame/features";
 // import { getWinner, isCellEmpty } from "@/components/templates/ReversiGame/features";
 
 export enum Player {
-    White = '○',
-    Black = '●'
-    // [WIP] あとで変更？？
+    White = '⚪',
+    Black = '⚫'
 }
 
 //ReversiGameState(インターフェース)を定義
