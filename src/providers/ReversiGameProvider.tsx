@@ -15,7 +15,9 @@ interface ReversiGameState {
     boardWidth: number;
     // ボードの状態を表す文字列の配列,ボードの各セルの状態を保持
     // ex) ['', '', '', 'W', 'B', '', '', '']
-    boardData: string[];
+    // boardData: string[];
+    // 二次元配列
+    boardData: (Player | null)[][];
     // どちらのプレイヤーが次のターンを行うか
     currentPlayer: Player;
     // ゲームが終了したときに勝者がいる場合はそのプレイヤーの情報が入る、それ以外の場合はnullになる
