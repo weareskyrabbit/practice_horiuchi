@@ -31,7 +31,7 @@ export function convertReversiGameCols(boardWidth: number, boardData: string[]) 
         const col: Array<string | null> = [];
         // 行のインデックスをループ
         for (var rowIdx = 0; rowIdx < boardWidth; rowIdx++) {
-            col.push(boardData[rowIdx * boardWidth + colIdx]);
+            col.push(boardData[rowIdx][colIdx]);
         }
         cols.push(col);
     }
