@@ -1,7 +1,7 @@
 import React from 'react';
 import { useReversiGame, Player } from '@/providers/ReversiGameProvider';
 
-const GameStatusR: React.FC = () => {
+const GameStatus: React.FC = () => {
     const { gameState } = useReversiGame();
     const { currentPlayer, winner, draw } = gameState;
 
@@ -19,4 +19,4 @@ const GameStatusR: React.FC = () => {
     );
 };
 
-export default GameStatusR;
+export default GameStatus;
