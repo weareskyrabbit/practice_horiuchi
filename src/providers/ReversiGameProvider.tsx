@@ -176,6 +176,18 @@ export const ReversiGameProvider: React.FC<{children: ReactNode}> = ({
 
             // 状態を更新
             dispatch({ type: ActionType.updateGameState, payload: { gameState: newGameState } });
+        } else {
+            // もし挟める場所がなかった場合、次のプレイヤーに切り替え
+            const nextPlayer = gameState.currentPlayer === Player.Black ? Player.White : Player.Black;
+
+            // 新しいゲーム状態を作成
+            const newGameState: ReversiGameState = {
+                ...gameState,
+                currentPlayer: nextPlayer // プレイヤーをスキップ
+            };
+
+            // 状態を更新
+            dispatch({ type: ActionType.updateGameState, payload: { gameState: newGameState } });
         }
     };
 
