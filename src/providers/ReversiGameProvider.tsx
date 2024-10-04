@@ -101,76 +101,82 @@ export const ReversiGameProvider: React.FC<{children: ReactNode}> = ({
             { x: 1, y: -1 }, { x: 1, y: 0 }, { x: 1, y: 1 }
         ];
 
-        // let canPlace = false;
-        // const newBoardData = gameState.boardData.map(row => row.slice());
+        // クリックした位置にコマを置けるかどうか
+        let canPlace = false;
+        const newBoardData = gameState.boardData.map(row => row.slice());
 
-        // for (const { x, y } of directions) {
-        //     let currentRow = row + x;
-        //     let currentCol = col + y;
-        //     let foundOpponent = false;
+        // 各方向に対して、相手のコマを挟めるかどうか
+        for (const { x, y } of directions) {
+            let currentRow = row + x;
+            let currentCol = col + y;
+            let foundOpponent = false;
 
-        //     while (currentRow >= 0 && currentRow < gameState.boardWidth && currentCol >= 0 && currentCol < gameState.boardWidth) {
-        //         if (newBoardData[currentRow][currentCol] === null) {
-        //             break;
-        //         }
-        //         if (newBoardData[currentRow][currentCol] !== gameState.currentPlayer) {
-        //             foundOpponent = true;
-        //         } else {
-        //             if (foundOpponent) {
-        //                 canPlace = true;
-        //                 break;
-        //             }
-        //             break;
-        //         }
-        //         currentRow += x;
-        //         currentCol += y;
-        //     }
-        // }
+            while (currentRow >= 0 && currentRow < gameState.boardWidth && currentCol >= 0 && currentCol < gameState.boardWidth) {
+                // セルが空であれば抜ける
+                if (newBoardData[currentRow][currentCol] === null) {
+                    break;
+                }
+                // 相手のコマが見つかった場合
+                if (newBoardData[currentRow][currentCol] !== gameState.currentPlayer) {
+                    foundOpponent = true;
+                }
+                // 相手のコマが見つかった場合
+                else {
+                    if (foundOpponent) {
+                        canPlace = true;
+                        break;
+                    }
+                    break;
+                }
+                currentRow += x;
+                currentCol += y;
+            }
+        }
 
-        // // もし合法な場所であれば、ボードを更新する
-        // if (canPlace) {
-        //     newBoardData[row][col] = gameState.currentPlayer;
+        // ボードを更新する
+        if (canPlace) {
+            newBoardData[row][col] = gameState.currentPlayer;
 
-        //     // ひっくり返す
-        //     for (const { x, y } of directions) {
-        //         let currentRow = row + x;
-        //         let currentCol = col + y;
-        //         let positionsToFlip: { row: number, col: number }[] = [];
-        //         let foundOpponent = false;
+            // ひっくり返す
+            for (const { x, y } of directions) {
+                let currentRow = row + x;
+                let currentCol = col + y;
+                let positionsToFlip: { row: number, col: number }[] = [];
+                let foundOpponent = false;
 
-        //         while (currentRow >= 0 && currentRow < gameState.boardWidth && currentCol >= 0 && currentCol < gameState.boardWidth) {
-        //             if (newBoardData[currentRow][currentCol] === null) {
-        //                 break;
-        //             }
-        //             if (newBoardData[currentRow][currentCol] !== gameState.currentPlayer) {
-        //                 positionsToFlip.push({ row: currentRow, col: currentCol });
-        //                 foundOpponent = true;
-        //             } else {
-        //                 if (foundOpponent) {
-        //                     for (const pos of positionsToFlip) {
-        //                         newBoardData[pos.row][pos.col] = gameState.currentPlayer;
-        //                     }
-        //                 }
-        //                 break;
-        //             }
-        //             currentRow += x;
-        //             currentCol += y;
-        //         }
-        //     }
+                while (currentRow >= 0 && currentRow < gameState.boardWidth && currentCol >= 0 && currentCol < gameState.boardWidth) {
+                    if (newBoardData[currentRow][currentCol] === null) {
+                        break;
+                    }
+                    if (newBoardData[currentRow][currentCol] !== gameState.currentPlayer) {
+                        positionsToFlip.push({ row: currentRow, col: currentCol });
+                        foundOpponent = true;
+                    } else {
+                        if (foundOpponent) {
+                            for (const pos of positionsToFlip) {
+                                newBoardData[pos.row][pos.col] = gameState.currentPlayer;
+                            }
+                        }
+                        break;
+                    }
+                    currentRow += x;
+                    currentCol += y;
+                }
+            }
 
-        //     // 次のプレイヤーに切り替え
-        //     const nextPlayer = gameState.currentPlayer === Player.Black ? Player.White : Player.Black;
+            // 次のプレイヤーに切り替え
+            const nextPlayer = gameState.currentPlayer === Player.Black ? Player.White : Player.Black;
 
-        //     // 新しいゲーム状態を作成
-        //     const newGameState: ReversiGameState = {
-        //         ...gameState,
-        //         boardData: newBoardData,
-        //         currentPlayer: nextPlayer
-        //     };
+            // 新しいゲーム状態を作成
+            const newGameState: ReversiGameState = {
+                ...gameState,
+                boardData: newBoardData,
+                currentPlayer: nextPlayer
+            };
 
-        //     // 状態を更新
-        //     dispatch({ type: ActionType.updateGameState, payload: { gameState: newGameState } });
-        // }
+            // 状態を更新
+            dispatch({ type: ActionType.updateGameState, payload: { gameState: newGameState } });
+        }
     };
 
 
