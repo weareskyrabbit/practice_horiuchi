@@ -91,7 +91,7 @@ export const ReversiGameProvider: React.FC<{children: ReactNode}> = ({
     const onGameBoardClick = (row: number, col: number) => {
         console.debug (' row= ' + row + ' col= ' + col);
         // セルが空でない場合は何もしない
-        if (gameState.boardData[row][col] !== null) {
+        if (gameState.boardData[col][row] !== null) {
             return;
         }
 
@@ -114,11 +114,11 @@ export const ReversiGameProvider: React.FC<{children: ReactNode}> = ({
 
             while (currentRow >= 0 && currentRow < gameState.boardWidth && currentCol >= 0 && currentCol < gameState.boardWidth) {
                 // セルが空であれば抜ける
-                if (newBoardData[currentRow][currentCol] === null) {
+                if (newBoardData[currentCol][currentRow] === null) {
                     break;
                 }
                 // 相手のコマが見つかった場合
-                if (newBoardData[currentRow][currentCol] !== gameState.currentPlayer) {
+                if (newBoardData[currentCol][currentRow] !== gameState.currentPlayer) {
                     foundOpponent = true;
                 }
                 // 相手のコマが見つかった場合
@@ -136,7 +136,7 @@ export const ReversiGameProvider: React.FC<{children: ReactNode}> = ({
 
         // ボードを更新する
         if (canPlace) {
-            newBoardData[row][col] = gameState.currentPlayer;
+            newBoardData[col][row] = gameState.currentPlayer;
 
             // ひっくり返す
             for (const { x, y } of directions) {
@@ -146,16 +146,16 @@ export const ReversiGameProvider: React.FC<{children: ReactNode}> = ({
                 let foundOpponent = false;
 
                 while (currentRow >= 0 && currentRow < gameState.boardWidth && currentCol >= 0 && currentCol < gameState.boardWidth) {
-                    if (newBoardData[currentRow][currentCol] === null) {
+                    if (newBoardData[currentCol][currentRow] === null) {
                         break;
                     }
-                    if (newBoardData[currentRow][currentCol] !== gameState.currentPlayer) {
+                    if (newBoardData[currentCol][currentRow] !== gameState.currentPlayer) {
                         positionsToFlip.push({ row: currentRow, col: currentCol });
                         foundOpponent = true;
                     } else {
                         if (foundOpponent) {
                             for (const pos of positionsToFlip) {
-                                newBoardData[pos.row][pos.col] = gameState.currentPlayer;
+                                newBoardData[pos.col][pos.row] = gameState.currentPlayer;
                             }
                         }
                         break;
