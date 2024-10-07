@@ -114,6 +114,7 @@ export const ReversiGameProvider: React.FC<{children: ReactNode}> = ({
 
             while (currentRow >= 0 && currentRow < gameState.boardWidth && currentCol >= 0 && currentCol < gameState.boardWidth) {
                 // セルが空であれば抜ける
+                // 型が違っても
                 if (newBoardData[currentCol][currentRow] === null) {
                     break;
                 }
@@ -121,7 +122,7 @@ export const ReversiGameProvider: React.FC<{children: ReactNode}> = ({
                 if (newBoardData[currentCol][currentRow] !== gameState.currentPlayer) {
                     foundOpponent = true;
                 }
-                // 相手のコマが見つかった場合
+                // 自分のコマが見つかった場合
                 else {
                     if (foundOpponent) {
                         canPlace = true;
@@ -175,6 +176,7 @@ export const ReversiGameProvider: React.FC<{children: ReactNode}> = ({
                 currentPlayer: nextPlayer
             };
 
+            // 修正予定
             // 状態を更新
             dispatch({ type: ActionType.updateGameState, payload: { gameState: newGameState } });
         } else {
