@@ -2,28 +2,19 @@
 普通のJavaScriptファイル
 
 ## モジュール
-`import`他のモジュールから変数,関数,クラスなどをインポート
-
-`export`他のモジュールに変数,関数,クラスなどを公開
+- `import`他のモジュールから変数,関数,クラスなどをインポート
+- `export`他のモジュールに変数,関数,クラスなどを公開
 
 以上を含むJavaScriptファイル
 
-## 関数
-```
-const Index = () => { ... };
-```
-Indexという名前の関数コンポーネントを定義。ページの内容を返すための関数。
-```
-var initEffect = false;
-
-useEffect(() => {
-    if (initEffect) {
-        return;
-    }
-    initEffect = true;
-    initMarkGameState();
-    console.debug('useEffect!');
-}, []);
-```
-useEffectフックの内部で、特定の処理（この場合、ゲームの初期化処理）が初回のみ実行されるように制御するため。初めてコンポーネントがマウントされたときに、initEffectがfalseであるため、処理が実行される。その後、initEffectをtrueに設定することで、次回以降の実行を防ぐ。
-
+## コミット種別
+- `fix`: バグ修正
+- `hotfix`: クリティカルなバグ修正
+- `add`: 新規(ファイル)機能追加
+- `update`: 機能修正(✕バグ)
+- `change`: 仕様変更
+- `clean`: 整理(リファクタリングetc)
+- `disable`: 無効化(コメントアウトetc)
+- `remove`: 消去(ファイル)
+- `upgrade`: バージョンアップ
+- `revert`: 変更取り消し
