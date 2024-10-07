@@ -43,9 +43,12 @@ export const ReversiGame: React.FC = () => {
                 gameState={gameState}
                 onGameBoardClick={(row, col) => onGameBoardClick(row, col)
             } />
-            {/* <GameStatusR gameState={gameState} onGameResetClick={() => {
-                initReversiGameState();
-            }} /> */}
+            <GameStatus
+                gameState={gameState}
+                onGameResetClick={() => {
+                    initReversiGameState();
+                }}
+                />
         </div>
     </>
 }
