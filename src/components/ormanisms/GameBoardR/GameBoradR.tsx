@@ -5,16 +5,24 @@ type SquareProps = {
     // 表示する内容受け取り
     children: string | null,
     // クリック時に呼び出し
-    onSquareClick: () => void
+    onSquareClick: () => void,
+    flipping: boolean // アニメーション
 }
 
 // クリック時にonsquareClickが実行
-const Square: React.FC<SquareProps> = ({children, onSquareClick}) => {
+// const Square: React.FC<SquareProps> = ({children, onSquareClick}) => {
+//     return (
+//         <td className={style.square} onClick={() => {onSquareClick();}}>
+//             {children}
+//         </td>
+//     )
+// }
+const Square: React.FC<SquareProps> = ({ children, onSquareClick, flipping }) => {
     return (
-        <td className={style.square} onClick={() => {onSquareClick();}}>
+        <td className={`${style.square} ${flipping ? style.flipping : ''}`} onClick={onSquareClick}>
             {children}
         </td>
-    )
+    );
 }
 
 // GameBoardコンポーネントが受け取るプロパティの型を定義
@@ -41,8 +49,9 @@ export const GameBoardR: React.FC<GameBoardProps> = ({gameState, onGameBoardClic
                                 // 各セルの値を出力する
                                 col.map((cell, rowIdx) => (
                                     <Square
-                                        key={'board-cell-' + colIdx + '-' + rowIdx}
-                                        onSquareClick={() => onGameBoardClick(rowIdx, colIdx)}
+                                    key={'board-cell-' + colIdx + '-' + rowIdx}
+                                    onSquareClick={() => onGameBoardClick(rowIdx, colIdx)}
+                                    flipping={gameState.flippingCells[rowIdx][colIdx]} // アニメーションのための状態を渡す
                                     >
                                         {cell}
                                     </Square>

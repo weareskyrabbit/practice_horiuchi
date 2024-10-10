@@ -10,6 +10,7 @@ export interface GameState {
     currentPlayer: Player;
     winner: Player | null;
     draw: boolean;
+    flippingCells: boolean[][]; // ひっくり返す駒の状態を管理
 }
 
 export const reversiGameTitle = () => {

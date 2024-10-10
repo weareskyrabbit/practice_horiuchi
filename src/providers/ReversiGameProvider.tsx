@@ -1,75 +1,50 @@
 import React, { useReducer, createContext, ReactNode } from "react";
-import { isCellEmpty } from "@/components/templates/ReversiGame/features";
-// [WIP] あとで書き換え
-// import { getWinner, isCellEmpty } from "@/components/templates/ReversiGame/features";
+import { isCellEmpty, Player } from "@/components/templates/ReversiGame/features";
 
-export enum Player {
-    White = '⚪',
-    Black = '⚫'
-}
-
-//ReversiGameState(インターフェース)を定義
+// ReversiGameStateインターフェースを定義
 interface ReversiGameState {
-    // ボードの幅（列数）を表す数値
     boardWidth: number;
-    // ボードの状態を表す文字列の配列,ボードの各セルの状態を保持
-    // ex) ['', '', '', 'W', 'B', '', '', '']
-    // boardData: string[];
-    // 二次元配列
     boardData: (Player | null)[][];
-    // どちらのプレイヤーが次のターンを行うか
     currentPlayer: Player;
-    // ゲームが終了したときに勝者がいる場合はそのプレイヤーの情報が入る、それ以外の場合はnullになる
     winner: Player | null;
-    // ゲームが引き分けかどうかを示すブール値。引き分けの場合はtrue、そうでない場合はfalse
     draw: boolean;
+    flippingCells: boolean[][]; // ひっくり返す駒の状態を管理する新しいプロパティ
 }
 
-// ReversiGameContext(インターフェース)定義
+// ReversiGameContextインターフェースを定義
 interface ReversiGameContext {
-    // gameStateプロパティはReversiGameState型の値を持つ
-    // ゲームの現在の状態を表す
-    gameState: ReversiGameState,
-    // 初期状態は引数を取らず、何も返さない
-    initReversiGameState: () => void,
-    // onGameBoardClickは、数値の引数indexを取る関数の型
-    // ゲームボードの特定のセルがクリックされたときの処理
-    // onGameBoardClick: (index: number) => void
-    onGameBoardClick: (row: number, col: number) => void
+    gameState: ReversiGameState;
+    initReversiGameState: () => void;
+    onGameBoardClick: (row: number, col: number) => void;
 }
 
-// ActionType(列挙型)を定義
+// ActionTypeを列挙型として定義
 enum ActionType {
     updateGameState,
 }
 
-type Action =
-    {
-        // アクションの種類を指定
-        type: ActionType.updateGameState,
-        payload: {
-            gameState: ReversiGameState
-        }
+// アクションの型を定義
+type Action = {
+    type: ActionType.updateGameState;
+    payload: {
+        gameState: ReversiGameState;
     };
+};
 
-// useReversiGameフックの定義
-// ReversiGameContextから現在のコンテキストの値を取得
+// ReversiGameContextの作成
 const ReversiGameContext = createContext({} as ReversiGameContext);
 export const useReversiGame = () => React.useContext(ReversiGameContext);
 
-// ReversiGameProviderというReactコンポーネントを定義
-// ゲームの状態と関数を子コンポーネントに提供
-export const ReversiGameProvider: React.FC<{ children: ReactNode }> = ({
-    children
-}) => {
-
+// ReversiGameProviderコンポーネントを定義
+export const ReversiGameProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
     // 初期状態の定義
-    var firstGameState: ReversiGameState = {
+    const firstGameState: ReversiGameState = {
         boardWidth: 8,
         boardData: Array.from({ length: 8 }, () => Array(8).fill(null)),
         currentPlayer: Player.Black,
         winner: null,
-        draw: false
+        draw: false,
+        flippingCells: Array.from({ length: 8 }, () => Array(8).fill(false)), // アニメーションのための初期化
     };
 
     // 最初の4つの駒を配置
@@ -78,21 +53,31 @@ export const ReversiGameProvider: React.FC<{ children: ReactNode }> = ({
     firstGameState.boardData[3][4] = Player.Black;
     firstGameState.boardData[4][3] = Player.Black;
 
-    // ゲームの状態を初期値に設定
-    const initReversiGameState = (() => {
-        // dispatchを使用してアクションを送信し、ゲーム状態をfirstGameStateに更新
-        dispatch({
-            type: ActionType.updateGameState, payload: {
-                gameState: firstGameState
-            }
-        });
-    });
+    // リデューサー関数
+    const reducer = (state: ReversiGameState, action: Action): ReversiGameState => {
+        switch (action.type) {
+            case ActionType.updateGameState:
+                return action.payload.gameState;
+            default:
+                return state;
+        }
+    };
 
-    // ゲームのクリック処理
+    // ゲームの状態を管理
+    const [gameState, dispatch] = useReducer(reducer, firstGameState);
+
+    // 初期状態の設定
+    const initReversiGameState = () => {
+        dispatch({
+            type: ActionType.updateGameState,
+            payload: { gameState: firstGameState },
+        });
+    };
+
+    // ゲームボードのクリック処理
     const onGameBoardClick = (row: number, col: number) => {
-        console.debug(' row= ' + row + ' col= ' + col);
         // セルが空でない場合は何もしない
-        if (gameState.boardData[col][row] !== null) {
+        if (!isCellEmpty(gameState, row, col)) {
             return;
         }
 
@@ -103,9 +88,9 @@ export const ReversiGameProvider: React.FC<{ children: ReactNode }> = ({
             { x: 1, y: -1 },  { x: 1, y: 0 },  { x: 1, y: 1 }
         ];
 
-        // クリックした位置にコマを置けるかどうか
         let canPlace = false;
         const newBoardData = gameState.boardData.map(row => row.slice());
+        const newFlippingCells = gameState.flippingCells.map(row => [...row]); // アニメーションのための新しい状態を作成
 
         // 各方向に対して、相手のコマを挟めるかどうか
         for (const { x, y } of directions) {
@@ -114,17 +99,12 @@ export const ReversiGameProvider: React.FC<{ children: ReactNode }> = ({
             let foundOpponent = false;
 
             while (currentRow >= 0 && currentRow < gameState.boardWidth && currentCol >= 0 && currentCol < gameState.boardWidth) {
-                // セルが空であれば抜ける
-                // 型が違っても
                 if (newBoardData[currentCol][currentRow] === null) {
                     break;
                 }
-                // 相手のコマが見つかった場合
                 if (newBoardData[currentCol][currentRow] !== gameState.currentPlayer) {
                     foundOpponent = true;
-                }
-                // 自分のコマが見つかった場合
-                else {
+                } else {
                     if (foundOpponent) {
                         canPlace = true;
                         break;
@@ -140,7 +120,7 @@ export const ReversiGameProvider: React.FC<{ children: ReactNode }> = ({
         if (canPlace) {
             newBoardData[col][row] = gameState.currentPlayer;
 
-            // ひっくり返す
+            // ひっくり返す処理
             for (const { x, y } of directions) {
                 let currentRow = row + x;
                 let currentCol = col + y;
@@ -158,6 +138,7 @@ export const ReversiGameProvider: React.FC<{ children: ReactNode }> = ({
                         if (foundOpponent) {
                             for (const pos of positionsToFlip) {
                                 newBoardData[pos.col][pos.row] = gameState.currentPlayer;
+                                newFlippingCells[pos.col][pos.row] = true; // フリッピングの状態を設定
                             }
                         }
                         break;
@@ -174,81 +155,30 @@ export const ReversiGameProvider: React.FC<{ children: ReactNode }> = ({
             const newGameState: ReversiGameState = {
                 ...gameState,
                 boardData: newBoardData,
-                currentPlayer: nextPlayer
+                currentPlayer: nextPlayer,
+                flippingCells: newFlippingCells, // アニメーションの状態を更新
             };
 
             // 状態を更新
             dispatch({ type: ActionType.updateGameState, payload: { gameState: newGameState } });
-        } else {
-            // // もし挟める場所がなかった場合、何もしない
-            // console.warn("このセルには置けません。");
 
-            // // 次のプレイヤーに切り替え
-            // const nextPlayer = gameState.currentPlayer === Player.Black ? Player.White : Player.Black;
-
-            // // 新しいゲーム状態を作成
-            // const newGameState: ReversiGameState = {
-            //     ...gameState,
-            //     currentPlayer: nextPlayer
-            // };
-
-            // // 状態を更新
-            // dispatch({ type: ActionType.updateGameState, payload: { gameState: newGameState } });
-            // もし挟める場所がなかった場合、置ける場所がないかを確認
-            const isNoPlaceToPlay = directions.every(({ x, y }) => {
-                for (let i = 1; i < gameState.boardWidth; i++) {
-                    const newRow = row + x * i;
-                    const newCol = col + y * i;
-                    if (newRow < 0 || newRow >= gameState.boardWidth || newCol < 0 || newCol >= gameState.boardWidth) {
-                        break;
-                    }
-                    if (newBoardData[newCol][newRow] === null) {
-                        return false;
-                    }
-                    if (newBoardData[newCol][newRow] === gameState.currentPlayer) {
-                        return true;
-                    }
-                }
-                return false;
-            });
-
-            if (isNoPlaceToPlay) {
-                console.warn("どこにも置ける場所がありません。ターンを相手に渡します。");
-                // 次のプレイヤーに切り替え
-                const nextPlayer = gameState.currentPlayer === Player.Black ? Player.White : Player.Black;
-
-                // 新しいゲーム状態を作成
-                const newGameState: ReversiGameState = {
-                    ...gameState,
-                    currentPlayer: nextPlayer
-                };
-
-                // 状態を更新
-                dispatch({ type: ActionType.updateGameState, payload: { gameState: newGameState } });
-            } else {
-                console.warn("このセルには置けません。");
-            }
+            // アニメーションの後に元に戻す
+            setTimeout(() => {
+                const resetFlippingCells = newFlippingCells.map(row => row.map(() => false));
+                dispatch({ type: ActionType.updateGameState, payload: { gameState: { ...newGameState, flippingCells: resetFlippingCells } } });
+            }, 500); // アニメーションの時間
         }
     };
 
-
-    // リデューサー関数
-    const reducer = (_: ReversiGameState, action: Action): ReversiGameState => {
-        switch (action.type) {
-            case ActionType.updateGameState:
-                return action.payload.gameState;
-        }
-    }
-
-    // ゲームの状態を管理
-    const [gameState, dispatch] = useReducer(reducer, firstGameState);
-
     return (
         <ReversiGameContext.Provider value={{
-            gameState, initReversiGameState, onGameBoardClick
+            gameState,
+            initReversiGameState,
+            onGameBoardClick
         }}>
             {children}
         </ReversiGameContext.Provider>
     );
+};
+export { Player };
 
-}
