@@ -45,13 +45,13 @@ enum ActionType {
 }
 
 type Action =
-{
-    // アクションの種類を指定
-    type: ActionType.updateGameState,
-    payload: {
-        gameState: ReversiGameState
-    }
-};
+    {
+        // アクションの種類を指定
+        type: ActionType.updateGameState,
+        payload: {
+            gameState: ReversiGameState
+        }
+    };
 
 // useReversiGameフックの定義
 // ReversiGameContextから現在のコンテキストの値を取得
@@ -60,7 +60,7 @@ export const useReversiGame = () => React.useContext(ReversiGameContext);
 
 // ReversiGameProviderというReactコンポーネントを定義
 // ゲームの状態と関数を子コンポーネントに提供
-export const ReversiGameProvider: React.FC<{children: ReactNode}> = ({
+export const ReversiGameProvider: React.FC<{ children: ReactNode }> = ({
     children
 }) => {
 
@@ -69,7 +69,7 @@ export const ReversiGameProvider: React.FC<{children: ReactNode}> = ({
         boardWidth: 8,
         boardData: Array.from({ length: 8 }, () => Array(8).fill(null)),
         currentPlayer: Player.Black,
-        winner : null,
+        winner: null,
         draw: false
     };
 
@@ -82,14 +82,16 @@ export const ReversiGameProvider: React.FC<{children: ReactNode}> = ({
     // ゲームの状態を初期値に設定
     const initReversiGameState = (() => {
         // dispatchを使用してアクションを送信し、ゲーム状態をfirstGameStateに更新
-        dispatch({type: ActionType.updateGameState, payload: {
-            gameState: firstGameState
-        }});
+        dispatch({
+            type: ActionType.updateGameState, payload: {
+                gameState: firstGameState
+            }
+        });
     });
 
     // ゲームのクリック処理
     const onGameBoardClick = (row: number, col: number) => {
-        console.debug (' row= ' + row + ' col= ' + col);
+        console.debug(' row= ' + row + ' col= ' + col);
         // セルが空でない場合は何もしない
         if (gameState.boardData[col][row] !== null) {
             return;
@@ -98,8 +100,8 @@ export const ReversiGameProvider: React.FC<{children: ReactNode}> = ({
         // 有効な8つの方向を定義
         const directions = [
             { x: -1, y: -1 }, { x: -1, y: 0 }, { x: -1, y: 1 },
-            { x: 0, y: -1 },                     { x: 0, y: 1 },
-            { x: 1, y: -1 }, { x: 1, y: 0 }, { x: 1, y: 1 }
+            { x: 0, y: -1 },                   { x: 0, y: 1 },
+            { x: 1, y: -1 },  { x: 1, y: 0 },  { x: 1, y: 1 }
         ];
 
         // クリックした位置にコマを置けるかどうか
@@ -179,8 +181,54 @@ export const ReversiGameProvider: React.FC<{children: ReactNode}> = ({
             // 状態を更新
             dispatch({ type: ActionType.updateGameState, payload: { gameState: newGameState } });
         } else {
-            // もし挟める場所がなかった場合、何もしない
-            console.warn("このセルには置けません。");
+            // // もし挟める場所がなかった場合、何もしない
+            // console.warn("このセルには置けません。");
+
+            // // 次のプレイヤーに切り替え
+            // const nextPlayer = gameState.currentPlayer === Player.Black ? Player.White : Player.Black;
+
+            // // 新しいゲーム状態を作成
+            // const newGameState: ReversiGameState = {
+            //     ...gameState,
+            //     currentPlayer: nextPlayer
+            // };
+
+            // // 状態を更新
+            // dispatch({ type: ActionType.updateGameState, payload: { gameState: newGameState } });
+            // もし挟める場所がなかった場合、置ける場所がないかを確認
+            const isNoPlaceToPlay = directions.every(({ x, y }) => {
+                for (let i = 1; i < gameState.boardWidth; i++) {
+                    const newRow = row + x * i;
+                    const newCol = col + y * i;
+                    if (newRow < 0 || newRow >= gameState.boardWidth || newCol < 0 || newCol >= gameState.boardWidth) {
+                        break;
+                    }
+                    if (newBoardData[newCol][newRow] === null) {
+                        return false;
+                    }
+                    if (newBoardData[newCol][newRow] === gameState.currentPlayer) {
+                        return true;
+                    }
+                }
+                return false;
+            });
+
+            if (isNoPlaceToPlay) {
+                console.warn("どこにも置ける場所がありません。ターンを相手に渡します。");
+                // 次のプレイヤーに切り替え
+                const nextPlayer = gameState.currentPlayer === Player.Black ? Player.White : Player.Black;
+
+                // 新しいゲーム状態を作成
+                const newGameState: ReversiGameState = {
+                    ...gameState,
+                    currentPlayer: nextPlayer
+                };
+
+                // 状態を更新
+                dispatch({ type: ActionType.updateGameState, payload: { gameState: newGameState } });
+            } else {
+                console.warn("このセルには置けません。");
+            }
         }
     };
 
