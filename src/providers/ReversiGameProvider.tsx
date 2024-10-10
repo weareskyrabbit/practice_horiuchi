@@ -54,14 +54,15 @@ export const ReversiGameProvider: React.FC<{ children: ReactNode }> = ({ childre
     firstGameState.boardData[4][3] = Player.Black;
 
     // リデューサー関数
-    const reducer = (state: ReversiGameState, action: Action): ReversiGameState => {
-        switch (action.type) {
-            case ActionType.updateGameState:
-                return action.payload.gameState;
-            default:
-                return state;
-        }
-    };
+const reducer: (state: ReversiGameState, action: Action) => ReversiGameState = (_, action) => {
+    switch (action.type) {
+        case ActionType.updateGameState:
+            return action.payload.gameState;
+        default:
+            return _; // デフォルトで状態をそのまま返す
+    }
+}
+
 
     // ゲームの状態を管理
     const [gameState, dispatch] = useReducer(reducer, firstGameState);
