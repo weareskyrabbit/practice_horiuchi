@@ -1,5 +1,4 @@
-import React, { useReducer } from "react";
-import { createContext, ReactNode } from "react";
+import React, { useReducer, createContext, ReactNode } from "react";
 import { isCellEmpty } from "@/components/templates/ReversiGame/features";
 // [WIP] あとで書き換え
 // import { getWinner, isCellEmpty } from "@/components/templates/ReversiGame/features";
